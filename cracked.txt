@@ -1,2 +1,5 @@
+alice:cherubims
 dan:Jerusalem11
+ed:stouthearted
 harry:Nebuchadnezzar
+mary:$piritual
