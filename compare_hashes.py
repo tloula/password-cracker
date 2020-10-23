@@ -13,7 +13,6 @@ import time
 
 def get_username(passwords, hash):
     for item in passwords:
-        print(item)
         if (item.rstrip().split(":")[2] == hash):
             return item.rstrip().split(":")[0]
     return "Error finding user"
