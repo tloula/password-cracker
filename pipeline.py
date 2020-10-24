@@ -256,8 +256,10 @@ def main (args):
                         password = mangled_word
                         hashed_password = hash.hexdigest()
                         username = get_username(username_password_set, hashed_password)
-                        print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                        cracked_list.append(username + ":" + password)
+                        username_password = username + ":" + password
+                        if (username_password not in cracked_list):
+                            print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
+                            cracked_list.append(username_password)
                     comparison_count += 1
 
                 current_count += 1
