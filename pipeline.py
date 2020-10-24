@@ -224,7 +224,7 @@ def main (args):
             current_count = 0
 
             print("Mangling, hashing, and comparing words...")
-            cracked_list = {}
+            cracked_list = []
             for word in lines:
                 current = dt.datetime.now()
                 elapsed = current - start
