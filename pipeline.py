@@ -265,6 +265,7 @@ def main (args):
                 current_count += 1
 
             print("\nProcess Complete...")
+            print("Cracked {} passwords".format(len(cracked_list)))
 
         finally:
             print("\nShutting down...")
