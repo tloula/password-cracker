@@ -238,7 +238,8 @@ def main (args):
                     "| Word Mangle/Hash/Compare / Sec: {:.2f}".format(words_sec),
                     "| Percent Complete: {:.2%}".format(percent_complete),
                     "| Estimated Time Remaining: {}".format(dt.timedelta(seconds=time_remaining)),
-                    "      ",
+                    "| Passwords Cracked: {}".format(len(crackedset)),
+                    "     ",
                     end='\r')
 
                 mangled_words = mangle_word(word.rstrip())
