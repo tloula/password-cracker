@@ -88,7 +88,8 @@ def mangle_word(word):
         output += prepend_numbers(x)
         output += append_numbers(x)
 
-    return output
+    # Convert to set to remove any duplicates
+    return list(set(output))
 
 def change_case(word):
     output = []
@@ -213,17 +214,17 @@ def main (args):
             total_count = len(lines)
 
             print("Parsing unknown password hashes...")
-            password_list = []
-            username_password_list = []
+            password_set = set()
+            username_password_set = set()
             for password in passwords.readlines():
-                password_list.append(password.rstrip().split(":")[2])
-                username_password_list.append(password.rstrip())
+                password_set.add(password.rstrip().split(":")[2])
+                username_password_set.add(password.rstrip())
 
             start = dt.datetime.now()
             current_count = 0
 
             print("Mangling, hashing, and comparing words...")
-            crackedset = []
+            cracked_list = {}
             for word in lines:
                 current = dt.datetime.now()
                 elapsed = current - start
@@ -238,24 +239,24 @@ def main (args):
                     "| Word Mangle/Hash/Compare / Sec: {:.2f}".format(words_sec),
                     "| Percent Complete: {:.2%}".format(percent_complete),
                     "| Estimated Time Remaining: {}".format(dt.timedelta(seconds=time_remaining)),
-                    "| Passwords Cracked: {}".format(len(crackedset)),
+                    "| Passwords Cracked: {}".format(len(cracked_list)),
                     "     ",
                     end='\r')
 
                 mangled_words = mangle_word(word.rstrip())
                 for mangled_word in mangled_words:
                     hash = hashlib.md5(mangled_word.encode())
-                    if (hash.hexdigest() in password_list):
+                    if (hash.hexdigest() in password_set):
                         password = mangled_word
                         hashed_password = hash.hexdigest()
-                        username = get_username(username_password_list, hashed_password)
+                        username = get_username(username_password_set, hashed_password)
                         print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                        crackedset.append(username + ":" + password)
+                        cracked_list.add(username + ":" + password)
 
                 current_count += 1
 
-            crackedset.sort()
-            for x in crackedset:
+            cracked_list.sort()
+            for x in cracked_list:
                 cracked.write(x + "\n")
             print("\nProcess Complete...")
 
