@@ -251,7 +251,7 @@ def main (args):
                         hashed_password = hash.hexdigest()
                         username = get_username(username_password_set, hashed_password)
                         print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                        cracked_list.add(username + ":" + password)
+                        cracked_list.append(username + ":" + password)
 
                 current_count += 1
 
