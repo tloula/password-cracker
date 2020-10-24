@@ -199,6 +199,9 @@ def main (args):
     passwords_filename = "passwords.txt"
     cracked_filename = "cracked.txt"
 
+    # Cracked Passwords
+    cracked_list = []
+
     try:
         print("Opening files...")
         wordlist = open(wordlist_filename, "r")
@@ -225,7 +228,6 @@ def main (args):
             comparison_count = 0
 
             print("Mangling, hashing, and comparing words...")
-            cracked_list = []
             for word in lines:
                 current = dt.datetime.now()
                 elapsed = current - start
@@ -260,13 +262,14 @@ def main (args):
 
                 current_count += 1
 
-            cracked_list.sort()
-            for x in cracked_list:
-                cracked.write(x + "\n")
             print("\nProcess Complete...")
 
         finally:
             print("\nShutting down...")
+            cracked_list.sort()
+            for x in cracked_list:
+                cracked.write(x + "\n")
+
             wordlist.close()
             passwords.close()
             cracked.close()
