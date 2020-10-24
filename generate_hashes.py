@@ -15,13 +15,15 @@ from mangle_word import mangle_word
 
 def main (args):
 
-    if len(args) != 2:
-        print("Usage: python generate_hashes.py wordlist.txt")
+    if len(args) < 2:
+        print("Usage: python generate_hashes.py wordlist.txt version")
         exit()
 
     wordlist_filename = args[1]
+    version = ""
+    if(len(args) > 2): version = args[2]
     index = wordlist_filename.find('.')
-    hashes_filename = wordlist_filename[:index] + '_hashed' + wordlist_filename[index:]
+    hashes_filename = wordlist_filename[:index] + "_" + version + "_hashed" + wordlist_filename[index:]
 
     try:
         open(hashes_filename, 'w').close()
