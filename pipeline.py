@@ -222,25 +222,29 @@ def main (args):
 
             start = dt.datetime.now()
             current_count = 0
+            comparison_count = 0
 
             print("Mangling, hashing, and comparing words...")
             cracked_list = []
             for word in lines:
                 current = dt.datetime.now()
                 elapsed = current - start
-                words_sec = current_count / (elapsed.seconds + 0.001)
+                words_sec = current_count / (elapsed.seconds + 0.00000001)
+                comparisons_sec = comparison_count / (elapsed.seconds + 0.00000001)
                 percent_complete = current_count / total_count
                 if (words_sec != 0): time_remaining = int((total_count - current_count) / (words_sec))
                 else: time_remaining = 0
                 print(
                     "Runtime: {}".format(dt.timedelta(seconds=elapsed.seconds)),
-                    "| Complete: {}".format(current_count),
-                    "| Total: {}".format(total_count),
-                    "| Word Mangle/Hash/Compare / Sec: {:.2f}".format(words_sec),
-                    "| Percent Complete: {:.2%}".format(percent_complete),
-                    "| Estimated Time Remaining: {}".format(dt.timedelta(seconds=time_remaining)),
-                    "| Passwords Cracked: {}".format(len(cracked_list)),
-                    "     ",
+                    "| Total Words: {}".format(total_count),
+                    "| Completed Words: {}".format(current_count),
+                    "| Words/Sec: {:.2f}".format(words_sec),
+                    "| Completed Comparisons: {}".format(comparison_count),
+                    "| Comparisons/Sec {:.2f}".format(comparisons_sec),
+                    "| Overall: {:.2%}".format(percent_complete),
+                    "| ETR: {}".format(dt.timedelta(seconds=time_remaining)),
+                    "| Cracked: {}".format(len(cracked_list)),
+                    "             ",
                     end='\r')
 
                 mangled_words = mangle_word(word.rstrip())
@@ -252,6 +256,7 @@ def main (args):
                         username = get_username(username_password_set, hashed_password)
                         print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
                         cracked_list.append(username + ":" + password)
+                    comparison_count += 1
 
                 current_count += 1
 
