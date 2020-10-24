@@ -21,30 +21,45 @@ def mangle_word(word):
     # Prepend and/or append additional lowercase letters
     prepended_lowercase_letters = prepend_lowercase_letters(word)
     appended_lowercase_letters = append_lowercase_letters(word)
+    both_lowercase_letters = []
+    for x in prepended_lowercase_letters:
+        both_lowercase_letters = append_lowercase_letters(x)
 
     output += prepended_lowercase_letters
     output += appended_lowercase_letters
+    output += both_lowercase_letters
 
     # Prepend and/or append additional uppercase letters
     prepended_uppercase_letters = prepend_uppercase_letters(word)
     appended_uppercase_letters = append_uppercase_letters(word)
+    both_lowercase_letters = []
+    for x in prepended_uppercase_letters:
+        both_uppercase_letters = append_uppercase_letters(x)
 
     output += prepended_uppercase_letters
     output += appended_uppercase_letters
+    output += both_uppercase_letters
 
     # Prepend and/or append additional symbols
     prepended_symbols = prepend_symbols(word)
     appended_symbols = append_symbols(word)
+    both_symbols = []
+    for x in prepended_symbols:
+        both_symbols = append_symbols(x)
 
     output += prepended_symbols
     output += appended_symbols
+    output += both_symbols
 
     # Prepend and/or append additional numbers
     prepended_numbers = prepend_numbers(word)
     appended_numbers = append_numbers(word)
+    for x in prepended_numbers:
+        both_numbers = append_numbers(x)
 
     output += prepended_numbers
     output += appended_numbers
+    output += both_numbers
 
     # Make common letter/symbol or letter/number substitutions
     substituted_characters = substitute_characters(word)
@@ -113,13 +128,13 @@ def append_symbols(word):
 
 def prepend_numbers(word):
     output = []
-    for i in range(0, 100):
+    for i in range(0, 1000):
         output.append(str(i) + word)
     return output
 
 def append_numbers(word):
     output = []
-    for i in range(0, 100):
+    for i in range(0, 1000):
         output.append(word + str(i))
     return output
 
@@ -148,11 +163,16 @@ def substitute_characters(word):
 
     substitutions = {
         "e": "3",
+        "E": "3",
         "i": "1",
+        "I": "1",
         "s": "$",
+        "S": "$",
         "a": "@",
         "o": "0",
-        "g": "9"
+        "O": "0",
+        "g": "9",
+        "c": "("
     }
 
     tmp = word
@@ -203,20 +223,22 @@ def main (args):
             current_count = 0
 
             print("Mangling, hashing, and comparing words...")
+            crackedset = []
             for word in lines:
                 current = dt.datetime.now()
                 elapsed = current - start
-                current_count += 1
-                words_sec = int(current_count / (elapsed.seconds + 0.001))
+                words_sec = current_count / (elapsed.seconds + 0.001)
                 percent_complete = current_count / total_count
-                time_remaining = int((total_count - current_count) / (words_sec + 1))
+                if (words_sec != 0): time_remaining = int((total_count - current_count) / (words_sec))
+                else: time_remaining = 0
                 print(
-                    "Runtime: {} seconds".format(elapsed.seconds),
+                    "Runtime: {}".format(dt.timedelta(seconds=elapsed.seconds)),
                     "| Complete: {}".format(current_count),
                     "| Total: {}".format(total_count),
-                    "| Word Mangle/Hash/Compare / Sec: {}".format(words_sec),
+                    "| Word Mangle/Hash/Compare / Sec: {:.2f}".format(words_sec),
                     "| Percent Complete: {:.2%}".format(percent_complete),
-                    "| Estimated Time Remaining: {} seconds".format(time_remaining),
+                    "| Estimated Time Remaining: {}".format(dt.timedelta(seconds=time_remaining)),
+                    "      ",
                     end='\r')
 
                 mangled_words = mangle_word(word.rstrip())
@@ -227,8 +249,13 @@ def main (args):
                         hashed_password = hash.hexdigest()
                         username = get_username(username_password_list, hashed_password)
                         print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                        cracked.write(username + ":" + password + "\n")
+                        crackedset.append(username + ":" + password)
 
+                current_count += 1
+
+            crackedset.sort()
+            for x in crackedset:
+                cracked.write(x + "\n")
             print("\nProcess Complete...")
 
         finally:
