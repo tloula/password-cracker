@@ -9,4 +9,8 @@ isaac:B@byl0n
 jack:Tarshish!
 ken:magog
 mary:$piritual
+pam:Wisdom
+quin:resisteth
+rob:emer@ld
+sam:dragon1
 tom:Herod
