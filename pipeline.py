@@ -75,8 +75,7 @@ def main (args):
                     "             ",
                     end='\r')
 
-                mangled_words = mangle_word(word.rstrip())
-                for mangled_word in mangled_words:
+                for mangled_word in mangle_word(word.rstrip()):
                     checked_unsalted = False
                     for usp in username_salt_password:
                         if (usp[1] != "" or not checked_unsalted):
