@@ -4,6 +4,8 @@
 # CS-3350 Foundations of Computer Security      #
 # ********************************************* #
 
+from colorama import Fore, Style
+
 import datetime as dt
 import hashlib
 import sys
@@ -262,7 +264,7 @@ def main (args):
                 current_count += 1
 
             print("\nProcess Complete...")
-            print("Cracked {} passwords".format(len(cracked_list)))
+            print(Fore.GREEN + "\nCracked {} passwords".format(len(cracked_list)) + Style.RESET_ALL)
 
         finally:
             print("\nShutting down...")
