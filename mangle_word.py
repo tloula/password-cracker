@@ -8,8 +8,7 @@ def mangle_word(word):
     output = []
 
     # Change Case
-    changed_case = change_case(word)
-    output += changed_case
+    output += change_case(word)
 
     # Prepend and/or append additional lowercase letters
     output += append_lowercase_letters(word)
@@ -28,6 +27,10 @@ def mangle_word(word):
 
     # Append common appendages
     output += append_common(word)
+
+    # Advanced mangling
+    for x in change_case(word):
+        output += substitute_characters(x)
 
     # Convert to set to remove any duplicates
     return list(set(output))
@@ -107,8 +110,6 @@ def substitute_characters(word):
         ("e", "3"),
         ("i", "1"),
         ("s", "5"),
-        ("S", "5"),
-        ("S", "$"),
         ("s", "$"),
         ("a", "@"),
         ("o", "0"),

@@ -47,14 +47,14 @@ class PasswordCracker():
 
     def mangle_hash_compare(self, word):
             for mangled_word in mangle_word(word.rstrip()):
-                checked_unsalted = False
-                for usp in self.username_salt_password_list:
-                    if (usp[1] != "" or not checked_unsalted):
-                        if (usp[1] == ""): checked_unsalted = True
-                        salted_mangled_word = mangled_word + usp[1]
-                        hash = hashlib.md5(salted_mangled_word.encode())
+                #checked_unsalted = False
+                #for usp in self.username_salt_password_list:
+                #    if (usp[1] != "" or not checked_unsalted):
+                #        if (usp[1] == ""): checked_unsalted = True
+                #        salted_mangled_word = mangled_word + usp[1]
+                        hash = hashlib.md5(mangled_word.encode())
                         if (hash.hexdigest() in self.password_set):
-                            password = salted_mangled_word.replace(usp[1], "")
+                            password = mangled_word#.replace(usp[1], "")
                             hashed_password = hash.hexdigest()
                             username = self.get_username(hashed_password)
                             username_password = username + ":" + password
@@ -97,7 +97,7 @@ class PasswordCracker():
                 self.start_time = dt.datetime.now()
                 print("Mangling, hashing, and comparing words...")
                 try:
-                    pool = Pool()
+                    pool = Pool(8)
                     self.cracked_set = set(tqdm.tqdm(pool.imap(self.mangle_hash_compare, wordlist), total=self.wordlist_file_length))
                 finally:
                     pool.close()
