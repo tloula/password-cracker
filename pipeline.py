@@ -23,7 +23,7 @@ def main (args):
     # Google Collaboratory Path: drive/My Drive/Colab Notebooks/Password Cracker/
     wordlist_filename = "wordlist.txt"
     passwords_filename = "passwords.txt"
-    cracked_filename = "cracked_2.txt"
+    cracked_filename = "cracked_new.txt"
 
     # Cracked Passwords
     cracked_list = []

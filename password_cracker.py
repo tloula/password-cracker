@@ -59,7 +59,7 @@ class PasswordCracker():
                             username = self.get_username(hashed_password)
                             username_password = username + ":" + password
                             if (username_password not in self.cracked_set):
-                                #print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
+                                print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
                                 return username_password
 
     def get_username(self, hash):

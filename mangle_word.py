@@ -29,8 +29,20 @@ def mangle_word(word):
     output += append_common(word)
 
     # Advanced mangling
-    for x in change_case(word):
-        output += substitute_characters(x)
+    #for x in change_case(word):
+    #    output += substitute_characters(x)
+    #    output += append_common(x)
+    #    output += append_lowercase_letters(x)
+    #    output += append_uppercase_letters(x)
+    #    output += append_numbers(x)
+    #    output += append_symbols(x)
+
+    #for x in substitute_characters(word):
+    #    output += append_common(x)
+    #    output += append_lowercase_letters(x)
+    #    output += append_uppercase_letters(x)
+    #    output += append_numbers(x)
+    #    output += append_symbols(x)
 
     # Convert to set to remove any duplicates
     return list(set(output))
@@ -42,10 +54,11 @@ def change_case(word):
     output.append(word.upper())
     output.append(word.lower())
 
+    # Capitalize one letter at a time
     for i in range(0, len(word)):
         output.append(word[:i] + word[i].upper() + word[i + 1:])
 
-    return output
+    return list(set(output))
 
 def prepend_lowercase_letters(word):
     letters_l = "abcdefghijklmnopqrstuvwxyz"
@@ -56,11 +69,11 @@ def append_lowercase_letters(word):
     return append_characters(word, letters_l)
 
 def prepend_uppercase_letters(word):
-    letters_u = "ABCDEFGHIJKLMNOPQURSUVWXYZ"
+    letters_u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return prepend_characters(word, letters_u)
 
 def append_uppercase_letters(word):
-    letters_u = "ABCDEFGHIJKLMNOPQURSUVWXYZ"
+    letters_u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
     return append_characters(word, letters_u)
 
 def prepend_symbols(word):
@@ -107,18 +120,31 @@ def substitute_characters(word):
     output = []
 
     substitutions = [
+        #("a", "^"),
+        #("b", "8"),
+        #("c", "<"),
+        #("c", "("),
+        #("c", "["),
+        #("c", "{"),
+        #("d", "|)"),
+        #("d", "|>"),
         ("e", "3"),
         ("i", "1"),
-        ("i", "|"),
-        ("l", "1"),
-        ("l", "/"),
-        ("l", "\\"),
-        ("l", "|"),
+        #("I", "1"),
+        #("i", ":"),
+        #("i", ";"),
+        #("i", "|"),
+        #("l", "1"),
+        #("l", "/"),
+        #("l", "\\"),
+        #("l", "|"),
         ("s", "5"),
         ("s", "$"),
+        ("s", "z"),
         ("a", "@"),
         ("o", "0"),
-        ("g", "9"),
+        #("g", "9"),
+        #("y", "?"),
     ]
 
     tmp = word
@@ -127,7 +153,7 @@ def substitute_characters(word):
         tmp = tmp.replace(orig, sub)
         output.append(tmp)
 
-    return output
+    return list(set(output))
 
 def append_common(word):
     output = []
@@ -139,14 +165,14 @@ def append_common(word):
         "123456"
         "0000",
         "00000",
-        "000000"
-        "321"
-        "4321"
-        "54321"
-        "654321"
-        "7654321"
-        "87654321"
-        "987654321"
+        "000000",
+        "321",
+        "4321",
+        "54321",
+        "654321",
+        "7654321",
+        "87654321",
+        "987654321",
     ]
 
     for x in common:
