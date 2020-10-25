@@ -5,6 +5,7 @@
 # ********************************************* #
 
 from colorama import Fore, Style
+from multiprocessing import Pool
 
 import datetime as dt
 import hashlib
@@ -43,24 +44,24 @@ class PasswordCracker():
             self.password_set.add(password.rstrip().split(":")[2])
             self.username_salt_password_list.append(password.rstrip().split(":"))
 
-    def mangle_hash_compare(self, wordlist):
-        for word in wordlist:
+    def mangle_hash_compare(self, word):
             self.update_progress()
-
             mangled_words = mangle_word(word.rstrip())
             for mangled_word in mangled_words:
-                checked_unsalted = False
-
-                for usp in self.username_salt_password_list:
-                    if (usp[1] != "" or not checked_unsalted):
-                        if (usp[1] == ""): checked_unsalted = True
-                        salted_mangled_word = mangled_word + usp[1]
-                        hash = hashlib.md5(salted_mangled_word.encode())
-                        if (hash.hexdigest() in self.password_set):
-                            self.cracked_password(hash, salted_mangled_word, usp[1])
-                        self.comparison_count += 1
+                self.hash_compare(mangled_word)
 
             self.current_count += 1
+
+    def hash_compare(self, mangled_word):
+        checked_unsalted = False
+        for usp in self.username_salt_password_list:
+            if (usp[1] != "" or not checked_unsalted):
+                if (usp[1] == ""): checked_unsalted = True
+                salted_mangled_word = mangled_word + usp[1]
+                hash = hashlib.md5(salted_mangled_word.encode())
+                if (hash.hexdigest() in self.password_set):
+                    self.cracked_password(hash, salted_mangled_word, usp[1])
+                self.comparison_count += 1
 
     def cracked_password(self, hash, salted_mangled_word, salt):
         password = salted_mangled_word.replace(salt, "")
@@ -98,15 +99,15 @@ class PasswordCracker():
         return "Error finding user"
 
     def shut_down(self, wordlist_file, password_file, cracked_file):
-        self.save_cracked_list()
+        self.save_cracked_list(cracked_file)
         wordlist_file.close()
         password_file.close()
         cracked_file.close()
 
-    def save_cracked_list(self):
+    def save_cracked_list(self, cracked_file):
         self.cracked_list.sort()
         for x in self.cracked_list:
-            self.cracked.write(x + "\n")
+            cracked_file.write(x + "\n")
 
     def run(self):
         try:
@@ -125,7 +126,15 @@ class PasswordCracker():
 
                 self.start_time = dt.datetime.now()
                 print("Mangling, hashing, and comparing words...")
-                self.mangle_hash_compare(wordlist)
+                #for word in wordlist:
+                #    self.mangle_hash_compare(word)
+
+                try:
+                    pool = Pool(4)                                  # Create a multiprocessing Pool
+                    pool.map(self.mangle_hash_compare, wordlist)    # process wordlist iterable with pool
+                finally:
+                    pool.close()
+                    pool.join()
 
                 print("\nProcess Complete...")
                 print(Fore.GREEN + "\nCracked {} passwords".format(len(self.cracked_list)) + Style.RESET_ALL)
