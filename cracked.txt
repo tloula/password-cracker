@@ -1,9 +1,10 @@
 alice:cherubims
 dan:Jerusalem11
 ed:stouthearted
+frank:thunderbolt5
 george:w1n3b1bb3r5
-jack:Tarshish!
-ken:magog
 harry:Nebuchadnezzar
 isaac:B@byl0n
+jack:Tarshish!
+ken:magog
 mary:$piritual
