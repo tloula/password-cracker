@@ -20,7 +20,7 @@ def mangle_word(word):
     output += append_symbols(word)
 
     # Prepend and/or append additional numbers
-    output += append_numbers(word)
+    output += append_numbers(word, False, 100)
 
     # Make common letter/symbol or letter/number substitutions
     output += substitute_characters(word)
@@ -29,20 +29,11 @@ def mangle_word(word):
     output += append_common(word)
 
     # Advanced mangling
-    #for x in change_case(word):
-    #    output += substitute_characters(x)
-    #    output += append_common(x)
-    #    output += append_lowercase_letters(x)
-    #    output += append_uppercase_letters(x)
-    #    output += append_numbers(x)
-    #    output += append_symbols(x)
+    for x in append_symbols(word, True):
+        output += append_symbols(x)
 
-    #for x in substitute_characters(word):
-    #    output += append_common(x)
-    #    output += append_lowercase_letters(x)
-    #    output += append_uppercase_letters(x)
-    #    output += append_numbers(x)
-    #    output += append_symbols(x)
+    for x in append_numbers(word):
+        output += append_symbols(x)
 
     # Convert to set to remove any duplicates
     return list(set(output))
@@ -60,60 +51,36 @@ def change_case(word):
 
     return list(set(output))
 
-def prepend_lowercase_letters(word):
+def append_lowercase_letters(word, front=False):
     letters_l = "abcdefghijklmnopqrstuvwxyz"
-    return prepend_characters(word, letters_l)
+    return append_characters(word, letters_l, front)
 
-def append_lowercase_letters(word):
-    letters_l = "abcdefghijklmnopqrstuvwxyz"
-    return append_characters(word, letters_l)
-
-def prepend_uppercase_letters(word):
+def append_uppercase_letters(word, front=False):
     letters_u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    return prepend_characters(word, letters_u)
+    return append_characters(word, letters_u, front)
 
-def append_uppercase_letters(word):
-    letters_u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    return append_characters(word, letters_u)
-
-def prepend_symbols(word):
+def append_symbols(word, front=False):
     symbols = "`~!@#$%^&*()_-+=|\}]{[:;?/>.<,"
-    return prepend_characters(word, symbols)
+    return append_characters(word, symbols, front)
 
-def append_symbols(word):
-    symbols = "`~!@#$%^&*()_-+=|\}]{[:;?/>.<,"
-    return append_characters(word, symbols)
-
-def prepend_numbers(word):
+def append_numbers(word, front=False, n=10):
     output = []
-    for i in range(0, 100):
-        output.append(str(i) + word)
+    if (front):
+        for i in range(n):
+            output.append(str(i) + word)
+    else:
+        for i in range(n):
+            output.append(word + str(i))
     return output
 
-def append_numbers(word):
+def append_characters(word, characters, front=False):
     output = []
-    for i in range(0, 100):
-        output.append(word + str(i))
-    return output
-
-def append_characters(word, characters):
-    output = []
-
-    for character in characters:
-        output.append(word + character)
-        for character2 in characters:
-            output.append(word + character + character2)
-
-    return output
-
-def prepend_characters(word, characters):
-    output = []
-
-    for character in characters:
-        output.append(character + word)
-        for character2 in characters:
-            output.append(character + character2 + word)
-
+    if (front):
+        for character in characters:
+            output.append(character + word)
+    else:
+        for character in characters:
+            output.append(word + character)
     return output
 
 def substitute_characters(word):
@@ -155,7 +122,7 @@ def substitute_characters(word):
 
     return list(set(output))
 
-def append_common(word):
+def append_common(word, front=False):
     output = []
 
     common = [
@@ -175,7 +142,11 @@ def append_common(word):
         "987654321",
     ]
 
-    for x in common:
-        output.append(word + x)
+    if (front):
+        for x in common:
+            output.append(x + word)
+    else:
+        for x in common:
+            output.append(word + x)
 
     return output

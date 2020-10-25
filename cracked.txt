@@ -1,4 +1,5 @@
 alice:cherubims
+bob:Eden1!
 chuck:ark1234
 dan:Jerusalem11
 ed:stouthearted
@@ -9,6 +10,7 @@ isaac:B@byl0n
 jack:Tarshish!
 ken:magog
 mary:$piritual
+oprah:!twinkling@
 pam:Wisdom
 quin:resisteth
 rob:emer@ld
