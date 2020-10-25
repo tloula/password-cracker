@@ -1,4 +1,5 @@
 alice:cherubims
+chuck:ark1234
 dan:Jerusalem11
 ed:stouthearted
 frank:thunderbolt5
@@ -8,3 +9,4 @@ isaac:B@byl0n
 jack:Tarshish!
 ken:magog
 mary:$piritual
+tom:Herod

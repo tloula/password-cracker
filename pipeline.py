@@ -68,8 +68,12 @@ def mangle_word(word):
     substituted_characters = substitute_characters(word)
     output += substituted_characters
 
+    # Append common appendages
+    appended_appendages = append_common(word)
+    output += appended_appendages
+
     ## MANGLE THE MANGLED ##
-    for x in changed_case:
+    #for x in changed_case:
     #    output += prepend_lowercase_letters(x)
     #    output += append_lowercase_letters(x)
     #    output += prepend_uppercase_letters(x)
@@ -77,10 +81,10 @@ def mangle_word(word):
     #    output += prepend_symbols(x)
     #    output += append_symbols(x)
     #    output += prepend_numbers(x)
-        output += append_numbers(x)
-        output += substitute_characters(x)
+    #    output += append_numbers(x)
+    #    output += substitute_characters(x)
 
-    for x in substituted_characters:
+    #for x in substituted_characters:
         #output += change_case(x)
         #output += prepend_lowercase_letters(x)
         #output += append_lowercase_letters(x)
@@ -89,7 +93,7 @@ def mangle_word(word):
         #output += prepend_symbols(x)
         #output += append_symbols(x)
         #output += prepend_numbers(x)
-        output += append_numbers(x)
+        #output += append_numbers(x)
 
     # Convert to set to remove any duplicates
     return list(set(output))
@@ -168,8 +172,10 @@ def substitute_characters(word):
     substitutions = [
         ("e", "3"),
         ("i", "1"),
-        ("s", "$"),
         ("s", "5"),
+        ("S", "5"),
+        ("S", "$"),
+        ("s", "$"),
         ("a", "@"),
         ("o", "0"),
         ("g", "9"),
@@ -180,6 +186,24 @@ def substitute_characters(word):
         output.append(word.replace(orig, sub))
         tmp = tmp.replace(orig, sub)
         output.append(tmp)
+
+    return output
+
+def append_common(word):
+    output = []
+
+    common = [
+        "123",
+        "1234",
+        "12345",
+        "123456"
+        "0000",
+        "00000",
+        "000000"
+    ]
+
+    for x in common:
+        output.append(word + x)
 
     return output
 
@@ -217,10 +241,10 @@ def main (args):
 
             print("Parsing unknown password hashes...")
             password_set = set()
-            username_password_set = set()
+            username_salt_password_set = set()
             for password in passwords.readlines():
                 password_set.add(password.rstrip().split(":")[2])
-                username_password_set.add(password.rstrip())
+                username_salt_password_set.add(password.rstrip())
 
             start = dt.datetime.now()
             current_count = 0
@@ -250,16 +274,22 @@ def main (args):
 
                 mangled_words = mangle_word(word.rstrip())
                 for mangled_word in mangled_words:
-                    hash = hashlib.md5(mangled_word.encode())
-                    if (hash.hexdigest() in password_set):
-                        password = mangled_word
-                        hashed_password = hash.hexdigest()
-                        username = get_username(username_password_set, hashed_password)
-                        username_password = username + ":" + password
-                        if (username_password not in cracked_list):
-                            print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                            cracked_list.append(username_password)
-                    comparison_count += 1
+                    # Salt
+                    for usp in username_salt_password_set:
+                        salt = usp.rstrip().split(":")[1]
+                        if(salt != ""):
+                            mangled_word += salt
+
+                            hash = hashlib.md5(mangled_word.encode())
+                            if (hash.hexdigest() in password_set):
+                                password = mangled_word
+                                hashed_password = hash.hexdigest()
+                                username = get_username(username_salt_password_set, hashed_password)
+                                username_password = username + ":" + password
+                                if (username_password not in cracked_list):
+                                    print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
+                                    cracked_list.append(username_password)
+                            comparison_count += 1
 
                 current_count += 1
 
