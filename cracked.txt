@@ -9,7 +9,9 @@ harry:Nebuchadnezzar
 isaac:B@byl0n
 jack:Tarshish!
 ken:magog
+laura:
 mary:$piritual
+nancy:
 oprah:!twinkling@
 pam:Wisdom
 quin:resisteth

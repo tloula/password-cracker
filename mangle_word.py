@@ -39,15 +39,20 @@ def mangle_word(word):
     return list(set(output))
 
 def change_case(word):
-    output = []
+    output = [word]
 
-    output.append(word.capitalize())
     output.append(word.upper())
     output.append(word.lower())
 
-    # Capitalize one letter at a time
-    for i in range(0, len(word)):
-        output.append(word[:i] + word[i].upper() + word[i + 1:])
+    # Capitalize one letter in a lowercase word at a time
+    for i in range(len(word)):
+        nw = word.lower()
+        output.append(nw[:i] + nw[i].upper() + nw[i + 1:])
+
+    # Capitalize one letter in an uppercase word at a time
+    for i in range(len(word)):
+        nw = word.upper()
+        output.append(nw[:i] + nw[i].lower() + nw[i + 1:])
 
     return list(set(output))
 
@@ -64,7 +69,7 @@ def append_symbols(word, front=False):
     return append_characters(word, symbols, front)
 
 def append_numbers(word, front=False, n=10):
-    output = []
+    output = [word]
     if (front):
         for i in range(n):
             output.append(str(i) + word)
@@ -74,7 +79,7 @@ def append_numbers(word, front=False, n=10):
     return output
 
 def append_characters(word, characters, front=False):
-    output = []
+    output = [word]
     if (front):
         for character in characters:
             output.append(character + word)
@@ -84,7 +89,7 @@ def append_characters(word, characters, front=False):
     return output
 
 def substitute_characters(word):
-    output = []
+    output = [word]
 
     substitutions = [
         #("a", "^"),
@@ -123,7 +128,7 @@ def substitute_characters(word):
     return list(set(output))
 
 def append_common(word, front=False):
-    output = []
+    output = [word]
 
     common = [
         "123",
