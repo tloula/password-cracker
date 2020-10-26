@@ -97,7 +97,7 @@ class PasswordCracker():
                 self.start_time = dt.datetime.now()
                 print("Mangling, hashing, and comparing words...")
                 try:
-                    pool = Pool(8)
+                    pool = Pool()
                     self.cracked_set = set(tqdm.tqdm(pool.imap(self.mangle_hash_compare, wordlist), total=self.wordlist_file_length))
                 finally:
                     pool.close()
