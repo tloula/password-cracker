@@ -98,7 +98,6 @@ class PasswordCracker():
                 print("Parsing unknown password hashes...")
                 self._parse_passwords(password_file)
 
-                self.start_time = dt.datetime.now()
                 print("Mangling, hashing, and comparing words...")
                 try:
                     pool = Pool()
