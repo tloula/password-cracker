@@ -45,22 +45,24 @@ class PasswordCracker():
             self.password_set.add(password.rstrip().split(":")[2])
             self.username_salt_password_list.append(password.rstrip().split(":"))
 
-    def mangle_hash_compare(self, word):
-            for mangled_word in mangle_word(word.rstrip()):
-                #checked_unsalted = False
-                #for usp in self.username_salt_password_list:
-                #    if (usp[1] != "" or not checked_unsalted):
-                #        if (usp[1] == ""): checked_unsalted = True
-                #        salted_mangled_word = mangled_word + usp[1]
-                        hash = hashlib.md5(mangled_word.encode())
-                        if (hash.hexdigest() in self.password_set):
-                            password = mangled_word#.replace(usp[1], "")
-                            hashed_password = hash.hexdigest()
-                            username = self.get_username(hashed_password)
-                            username_password = username + ":" + password
-                            if (username_password not in self.cracked_set):
-                                print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, password))
-                                return username_password
+    def mangle_hash_compare(self, word, check_salt=False, output=False):
+        for mangled_word in mangle_word(word.rstrip()):
+            result = self.hash_compare(mangled_word, "", output)
+            if (result != None): return result
+            if (check_salt):
+                for usp in self.username_salt_password_list:
+                    if (usp != ""):
+                        result = self.hash_compare(mangled_word, usp[1], output)
+                        if (result != None): return result
+
+    def hash_compare(self, mangled_word, salt, output):
+        hashed_password = hashlib.md5((mangled_word + salt).encode()).hexdigest()
+        if (hashed_password in self.password_set):
+            username = self.get_username(hashed_password)
+            username_password = username + ":" + mangled_word
+            if (username_password not in self.cracked_set):
+                if(output): print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, mangled_word))
+                return username_password
 
     def get_username(self, hash):
         for usp in self.username_salt_password_list:

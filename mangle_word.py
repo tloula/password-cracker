@@ -35,6 +35,13 @@ def mangle_word(word):
     for x in append_numbers(word):
         output += append_symbols(x)
 
+    # Dates
+    #for y in range(1950, 2020):
+    #    for m in range(13):
+    #        for d in range(32):
+    #            output.append(word + str(m) + str(d) + str(y))
+    output.append(word + str(12311999))
+
     # Convert to set to remove any duplicates
     return list(set(output))
 
@@ -65,7 +72,7 @@ def append_uppercase_letters(word, front=False):
     return append_characters(word, letters_u, front)
 
 def append_symbols(word, front=False):
-    symbols = "`~!@#$%^&*()_-+=|\}]{[:;?/>.<,"
+    symbols = "!@#$%^&*()-=_+<>?"
     return append_characters(word, symbols, front)
 
 def append_numbers(word, front=False, n=10):
