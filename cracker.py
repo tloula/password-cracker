@@ -31,52 +31,52 @@ class PasswordCracker():
         self.wordlist_filename = wordlist_filename
         self.output_filename = output_filename
 
-    def open_files(self):
+    def _open_files(self):
         wordlist_file = open(self.wordlist_filename, "r")
         password_file = open(self.passwords_filename, "r")
         cracked_file = open(self.output_filename, "a")
         return wordlist_file, password_file, cracked_file
 
-    def parse_wordlist(self, wordlist_file):
+    def _parse_wordlist(self, wordlist_file):
         lines = wordlist_file.readlines()
         self.wordlist_file_length = len(lines)
         return lines
 
-    def parse_passwords(self, password_file):
+    def _parse_passwords(self, password_file):
         for password in password_file.readlines():
             self.password_set.add(password.rstrip().split(":")[2])
             self.username_salt_password_list.append(password.rstrip().split(":"))
 
-    def mangle_hash_compare(self, word):
+    def _mangle_hash_compare(self, word):
         for mangled_word in mangle_word(word.rstrip()):
-            result = self.hash_compare(mangled_word, "")
+            result = self._hash_compare(mangled_word, "")
             if (result != None): return result
             if (self.check_salted):
                 for usp in self.username_salt_password_list:
                     if (usp != ""):
-                        result = self.hash_compare(mangled_word, usp[1])
+                        result = self._hash_compare(mangled_word, usp[1])
                         if (result != None): return result
 
-    def hash_compare(self, mangled_word, salt):
+    def _hash_compare(self, mangled_word, salt):
         hashed_password = hashlib.md5((mangled_word + salt).encode()).hexdigest()
         if (hashed_password in self.password_set):
-            username = self.get_username(hashed_password)
+            username = self._get_username(hashed_password)
             username_password = username + ":" + mangled_word
             if (username_password not in self.cracked_set):
                 if(self.realtime_output): print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, mangled_word))
                 return username_password
 
-    def get_username(self, hash):
+    def _get_username(self, hash):
         for usp in self.username_salt_password_list:
             if (usp[2] == hash): return usp[0]
         return "Error finding user"
 
-    def shut_down(self, wordlist_file, password_file, cracked_file):
+    def _shut_down(self, wordlist_file, password_file, cracked_file):
         wordlist_file.close()
         password_file.close()
         cracked_file.close()
 
-    def save_cracked_set(self, cracked_file):
+    def _save_cracked_set(self, cracked_file):
         self.cracked_set.remove(None)
         cracked_list = list(self.cracked_set)
         cracked_list.sort()
@@ -86,23 +86,23 @@ class PasswordCracker():
     def run(self):
         try:
             print("Opening files...")
-            wordlist_file, password_file, cracked_file = self.open_files()
+            wordlist_file, password_file, cracked_file = self._open_files()
         except FileNotFoundError as e:
             print("File not found", e)
             exit()
         else:
             try:
                 print("Parsing wordlist...")
-                wordlist = self.parse_wordlist(wordlist_file)
+                wordlist = self._parse_wordlist(wordlist_file)
 
                 print("Parsing unknown password hashes...")
-                self.parse_passwords(password_file)
+                self._parse_passwords(password_file)
 
                 self.start_time = dt.datetime.now()
                 print("Mangling, hashing, and comparing words...")
                 try:
                     pool = Pool()
-                    self.cracked_set = set(tqdm.tqdm(pool.imap(self.mangle_hash_compare, wordlist), total=self.wordlist_file_length))
+                    self.cracked_set = set(tqdm.tqdm(pool.imap(self._mangle_hash_compare, wordlist), total=self.wordlist_file_length))
                 finally:
                     pool.close()
                     pool.join()
@@ -110,10 +110,10 @@ class PasswordCracker():
                 print("\nProcess Complete...")
 
             finally:
-                self.save_cracked_set(cracked_file)
+                self._save_cracked_set(cracked_file)
                 print(Fore.GREEN + "\nCracked {} passwords".format(len(self.cracked_set)) + Style.RESET_ALL)
                 print("\nShutting down...")
-                self.shut_down(wordlist_file, password_file, cracked_file)
+                self._shut_down(wordlist_file, password_file, cracked_file)
 
 def main (args):
 
