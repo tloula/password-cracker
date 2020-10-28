@@ -22,8 +22,6 @@ class PasswordCracker():
         self.username_salt_password_list = []
         self.cracked_set = set()
 
-        self.wordlist_file_length = 0
-
         self.check_salted = check_salted
         self.realtime_output = output
 
@@ -36,11 +34,6 @@ class PasswordCracker():
         password_file = open(self.passwords_filename, "r")
         cracked_file = open(self.output_filename, "a")
         return wordlist_file, password_file, cracked_file
-
-    def _parse_wordlist(self, wordlist_file):
-        lines = wordlist_file.readlines()
-        self.wordlist_file_length = len(lines)
-        return lines
 
     def _parse_passwords(self, password_file):
         for password in password_file.readlines():
@@ -93,7 +86,7 @@ class PasswordCracker():
         else:
             try:
                 print("Parsing wordlist...")
-                wordlist = self._parse_wordlist(wordlist_file)
+                wordlist = wordlist_file.readlines()
 
                 print("Parsing unknown password hashes...")
                 self._parse_passwords(password_file)
@@ -101,7 +94,7 @@ class PasswordCracker():
                 print("Mangling, hashing, and comparing words...")
                 try:
                     pool = Pool()
-                    self.cracked_set = set(tqdm.tqdm(pool.imap(self._mangle_hash_compare, wordlist), total=self.wordlist_file_length))
+                    self.cracked_set = set(tqdm.tqdm(pool.imap(self._mangle_hash_compare, wordlist), total=len(wordlist)))
                 finally:
                     pool.close()
                     pool.join()
