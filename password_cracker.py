@@ -17,22 +17,24 @@ from mangle_word import mangle_word
 
 class PasswordCracker():
 
-    def __init__(self):
+    def __init__(self, passwords_filename, wordlist_filename, output_filename, check_salted, output):
         self.password_set = set()
         self.username_salt_password_list = []
         self.cracked_set = set()
 
-        # Progress Data
         self.wordlist_file_length = 0
-        self.start_time = 0
-        self.current_count = 0
-        self.comparison_count = 0
+
+        self.check_salted = check_salted
+        self.realtime_output = output
+
+        self.passwords_filename = passwords_filename
+        self.wordlist_filename = wordlist_filename
+        self.output_filename = output_filename
 
     def open_files(self):
-        # Google Collaboratory Path: drive/My Drive/Colab Notebooks/Password Cracker/
-        wordlist_file = open("wordlist.txt", "r")
-        password_file = open("passwords.txt", "r")
-        cracked_file = open("cracked_new.txt", "a")
+        wordlist_file = open(self.wordlist_filename, "r")
+        password_file = open(self.passwords_filename, "r")
+        cracked_file = open(self.output_filename, "a")
         return wordlist_file, password_file, cracked_file
 
     def parse_wordlist(self, wordlist_file):
@@ -45,23 +47,23 @@ class PasswordCracker():
             self.password_set.add(password.rstrip().split(":")[2])
             self.username_salt_password_list.append(password.rstrip().split(":"))
 
-    def mangle_hash_compare(self, word, check_salt=False, output=False):
+    def mangle_hash_compare(self, word):
         for mangled_word in mangle_word(word.rstrip()):
-            result = self.hash_compare(mangled_word, "", output)
+            result = self.hash_compare(mangled_word, "")
             if (result != None): return result
-            if (check_salt):
+            if (self.check_salted):
                 for usp in self.username_salt_password_list:
                     if (usp != ""):
-                        result = self.hash_compare(mangled_word, usp[1], output)
+                        result = self.hash_compare(mangled_word, usp[1])
                         if (result != None): return result
 
-    def hash_compare(self, mangled_word, salt, output):
+    def hash_compare(self, mangled_word, salt):
         hashed_password = hashlib.md5((mangled_word + salt).encode()).hexdigest()
         if (hashed_password in self.password_set):
             username = self.get_username(hashed_password)
             username_password = username + ":" + mangled_word
             if (username_password not in self.cracked_set):
-                if(output): print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, mangled_word))
+                if(self.realtime_output): print("\nPassword Cracked | Username: {}, Password: {}\n".format(username, mangled_word))
                 return username_password
 
     def get_username(self, hash):
@@ -114,7 +116,19 @@ class PasswordCracker():
                 self.shut_down(wordlist_file, password_file, cracked_file)
 
 def main (args):
-    cracker = PasswordCracker()
+
+    if (len(args) < 3):
+        print("Usage: python cracker.py passwords.txt wordlist.txt output.txt -s -o")
+        print("-s : Individually check any salted passwords")
+        print("-o : Output cracked passwords in real time")
+        exit(1)
+
+    check_salted, realtime_output = False, False
+
+    if ("-s" in args): check_salted = True
+    if ("-o" in args): realtime_output = True
+
+    cracker = PasswordCracker(args[1], args[2], args[3], check_salted, realtime_output)
     cracker.run()
 
 if __name__ == "__main__":
