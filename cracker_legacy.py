@@ -76,14 +76,14 @@ def main (args):
                     end='\r')
 
                 for mangled_word in mangle_word(word.rstrip()):
-                    checked_unsalted = False
-                    for usp in username_salt_password:
-                        if (usp[1] != "" or not checked_unsalted):
-                            if (usp[1] == ""): checked_unsalted = True
-                            salted_mangled_word = mangled_word + usp[1]
-                            hash = hashlib.md5(salted_mangled_word.encode())
+                    #checked_unsalted = False
+                    #for usp in username_salt_password:
+                    #    if (usp[1] != "" or not checked_unsalted):
+                    #        if (usp[1] == ""): checked_unsalted = True
+                    #        salted_mangled_word = mangled_word + usp[1]
+                            hash = hashlib.md5(mangled_word.encode())
                             if (hash.hexdigest() in password_set):
-                                password = salted_mangled_word.replace(usp[1], "")
+                                password = mangled_word#.replace(usp[1], "")
                                 hashed_password = hash.hexdigest()
                                 username = get_username(username_salt_password, hashed_password)
                                 username_password = username + ":" + password

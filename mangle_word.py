@@ -40,7 +40,9 @@ def mangle_word(word):
     #    for m in range(13):
     #        for d in range(32):
     #            output.append(word + str(m) + str(d) + str(y))
+    #            output.append(str(m) + str(d) + str(y) + word)
     output.append(word + str(12311999))
+    output.append(str(1980) + word)
 
     # Convert to set to remove any duplicates
     return list(set(output))
