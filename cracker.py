@@ -94,7 +94,10 @@ class PasswordCracker():
                 print("Mangling, hashing, and comparing words...")
                 try:
                     pool = Pool()
-                    self.cracked_set = set(tqdm.tqdm(pool.imap(self._mangle_hash_compare, wordlist), total=len(wordlist)))
+                    self.cracked_set = set(tqdm.tqdm(
+                        pool.imap(self._mangle_hash_compare, wordlist),
+                        total=len(wordlist)
+                    ))
                 finally:
                     pool.close()
                     pool.join()
@@ -103,7 +106,9 @@ class PasswordCracker():
 
             finally:
                 self._save_cracked_set(cracked_file)
-                print(Fore.GREEN + "\nCracked {} passwords".format(len(self.cracked_set)) + Style.RESET_ALL)
+                print(Fore.GREEN +
+                    "\nCracked {} passwords".format(len(self.cracked_set)) +
+                    Style.RESET_ALL)
                 print("\nShutting down...")
                 self._shut_down(wordlist_file, password_file, cracked_file)
 
